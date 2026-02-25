@@ -6,44 +6,44 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-purple-100">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-md border-b border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-[#6A0DAD] to-[#FF4FA3] rounded-2xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-[#1E40AF] to-[#EA580C] rounded-2xl flex items-center justify-center">
               <span className="text-white text-xl font-bold">S</span>
             </div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-[#6A0DAD] to-[#FF4FA3] bg-clip-text text-transparent">
+            <span className="text-2xl font-bold bg-gradient-to-r from-[#1E40AF] to-[#EA580C] bg-clip-text text-transparent">
               SheRide
             </span>
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link to="/passenger" className="text-gray-700 hover:text-[#6A0DAD] transition-colors">
-              Passenger
-            </Link>
-            <Link to="/driver" className="text-gray-700 hover:text-[#6A0DAD] transition-colors">
-              Driver
-            </Link>
-            <Link to="/safety" className="text-gray-700 hover:text-[#6A0DAD] transition-colors">
-              Safety
-            </Link>
-            <Link to="/financial" className="text-gray-700 hover:text-[#6A0DAD] transition-colors">
-              Financial
-            </Link>
-            <Link to="/admin" className="text-gray-700 hover:text-[#6A0DAD] transition-colors">
-              Admin
-            </Link>
+            <a href="#features" className="text-gray-300 hover:text-[#EA580C] transition-colors font-medium">
+              Features
+            </a>
+            <a href="#how-it-works" className="text-gray-300 hover:text-[#EA580C] transition-colors font-medium">
+              How It Works
+            </a>
+            <a href="#impact" className="text-gray-300 hover:text-[#EA580C] transition-colors font-medium">
+              Impact
+            </a>
           </nav>
 
           <div className="hidden md:flex items-center space-x-4">
-            <button className="px-6 py-2 text-[#6A0DAD] hover:text-[#FF4FA3] transition-colors">
+            <Link
+              to="/login"
+              className="px-6 py-2 text-[#1E40AF] hover:text-[#EA580C] font-semibold transition-colors"
+            >
               Sign In
-            </button>
-            <button className="px-6 py-2 bg-gradient-to-r from-[#6A0DAD] to-[#FF4FA3] text-white rounded-full hover:shadow-lg hover:shadow-purple-500/30 transition-all">
+            </Link>
+            <Link
+              to="/login"
+              className="px-6 py-2 bg-gradient-to-r from-[#1E40AF] to-[#EA580C] text-white rounded-full hover:shadow-lg hover:shadow-purple-500/40 transition-all font-semibold"
+            >
               Get Started
-            </button>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -58,50 +58,44 @@ export function Header() {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="md:hidden bg-white border-t border-purple-100">
+        <div className="md:hidden bg-slate-900 border-t border-slate-800">
           <div className="px-4 py-4 space-y-3">
-            <Link
-              to="/passenger"
-              className="block px-4 py-2 text-gray-700 hover:bg-purple-50 rounded-lg"
+            <a
+              href="#features"
+              className="block px-4 py-2 text-gray-300 hover:bg-slate-800 rounded-lg font-medium"
               onClick={() => setIsMenuOpen(false)}
             >
-              Passenger
-            </Link>
-            <Link
-              to="/driver"
-              className="block px-4 py-2 text-gray-700 hover:bg-purple-50 rounded-lg"
+              Features
+            </a>
+            <a
+              href="#how-it-works"
+              className="block px-4 py-2 text-gray-300 hover:bg-slate-800 rounded-lg font-medium"
               onClick={() => setIsMenuOpen(false)}
             >
-              Driver
-            </Link>
-            <Link
-              to="/safety"
-              className="block px-4 py-2 text-gray-700 hover:bg-purple-50 rounded-lg"
+              How It Works
+            </a>
+            <a
+              href="#impact"
+              className="block px-4 py-2 text-gray-300 hover:bg-slate-800 rounded-lg font-medium"
               onClick={() => setIsMenuOpen(false)}
             >
-              Safety
-            </Link>
-            <Link
-              to="/financial"
-              className="block px-4 py-2 text-gray-700 hover:bg-purple-50 rounded-lg"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Financial
-            </Link>
-            <Link
-              to="/admin"
-              className="block px-4 py-2 text-gray-700 hover:bg-purple-50 rounded-lg"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Admin
-            </Link>
+              Impact
+            </a>
             <div className="pt-3 space-y-2">
-              <button className="w-full px-4 py-2 text-[#6A0DAD] border border-[#6A0DAD] rounded-lg">
+              <Link
+                to="/login"
+                className="block w-full px-4 py-2 text-center text-[#EA580C] border border-[#EA580C] rounded-lg font-semibold hover:bg-slate-800 transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 Sign In
-              </button>
-              <button className="w-full px-4 py-2 bg-gradient-to-r from-[#6A0DAD] to-[#FF4FA3] text-white rounded-lg">
+              </Link>
+              <Link
+                to="/login"
+                className="block w-full px-4 py-2 text-center bg-gradient-to-r from-[#1E40AF] to-[#EA580C] text-white rounded-lg font-semibold hover:shadow-lg transition-all"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 Get Started
-              </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -109,3 +103,4 @@ export function Header() {
     </header>
   );
 }
+

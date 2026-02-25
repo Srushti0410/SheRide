@@ -1,16 +1,37 @@
-import { Header } from "../components/header";
-import { GlassCard } from "../components/glass-card";
-import { motion } from "motion/react";
-import { 
-  Power, MapPin, DollarSign, TrendingUp, Clock,
-  User, Phone, X, Check, Shield, Award, AlertTriangle,
-  Calendar, CreditCard, ChevronRight
-} from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router";
+import { motion } from "motion/react";
+import {
+  Power,
+  MapPin,
+  DollarSign,
+  TrendingUp,
+  Clock,
+  User,
+  LogOut,
+  Check,
+  Shield,
+  Award,
+  Calendar,
+  CreditCard,
+  ChevronRight,
+  AlertCircle,
+  Car,
+} from "lucide-react";
+import { Button } from "../components/ui/button";
+import { Card } from "../components/ui/card";
 
 export function DriverDashboard() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [isOnline, setIsOnline] = useState(false);
   const [showRideRequest, setShowRideRequest] = useState(true);
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   const rideRequest = {
     passenger: "Ananya Verma",
@@ -19,379 +40,455 @@ export function DriverDashboard() {
     distance: "12.5 km",
     fare: "₹180",
     rating: 4.8,
-    time: "2 mins away"
+    time: "2 mins away",
   };
 
   const earnings = {
     today: 1250,
     week: 8500,
     month: 32400,
-    rides: 18
+    rides: 18,
   };
 
+  const recentRides = [
+    { time: "2:30 PM", fare: "₹180", distance: "12 km", passenger: "Neha K." },
+    { time: "1:15 PM", fare: "₹95", distance: "6 km", passenger: "Priya S." },
+    { time: "11:45 AM", fare: "₹220", distance: "15 km", passenger: "Anjali M." },
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-pink-50/20">
-      <Header />
-
-      <div className="pt-20 px-4 sm:px-6 lg:px-8 pb-12">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
-          >
-            <div>
-              <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-[#6A0DAD] to-[#FF4FA3] bg-clip-text text-transparent">
-                Driver Dashboard
-              </h1>
-              <p className="text-gray-600">Manage your rides and earnings</p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/20">
+      {/* Header */}
+      <header className="sticky top-0 z-50 backdrop-blur-xl bg-white/50 border-b border-gray-200/50">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center">
+              <span className="text-white font-bold">{user?.name.charAt(0)}</span>
             </div>
+            <div>
+              <h1 className="font-bold text-gray-900">Welcome, {user?.name}</h1>
+              <p className="text-xs text-gray-500">Driver Account</p>
+            </div>
+          </div>
 
-            {/* Online/Offline Toggle */}
+          <div className="flex items-center gap-3">
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => setIsOnline(!isOnline)}
-              className={`px-8 py-4 rounded-full font-semibold transition-all flex items-center space-x-3 ${
-                isOnline
+              className={`px-6 py-2 rounded-full font-semibold transition-all flex items-center gap-2 ${isOnline
                   ? "bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg shadow-green-500/30"
                   : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-              }`}
+                }`}
             >
-              <Power size={24} />
-              <span className="text-lg">{isOnline ? "Online" : "Offline"}</span>
+              <Power className="w-4 h-4" />
+              {isOnline ? "Online" : "Offline"}
             </motion.button>
-          </motion.div>
 
-          {/* Earnings Summary */}
+            <Button
+              onClick={handleLogout}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              <LogOut className="w-4 h-4" />
+              Logout
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      <main className="max-w-7xl mx-auto px-4 md:px-8 py-8">
+        {/* Earnings Summary */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="grid md:grid-cols-4 gap-6 mb-8"
+        >
+          {[
+            {
+              label: "Today",
+              amount: earnings.today,
+              icon: Calendar,
+              gradient: "from-blue-500 to-blue-600",
+            },
+            {
+              label: "This Week",
+              amount: earnings.week,
+              icon: TrendingUp,
+              gradient: "from-purple-500 to-purple-600",
+            },
+            {
+              label: "This Month",
+              amount: earnings.month,
+              icon: DollarSign,
+              gradient: "from-pink-500 to-pink-600",
+            },
+            {
+              label: "Rides Today",
+              amount: earnings.rides,
+              icon: Award,
+              gradient: "from-green-500 to-green-600",
+              isCount: true,
+            },
+          ].map((item, index) => {
+            const IconComponent = item.icon;
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <Card className="p-6 rounded-2xl border-0 shadow-lg bg-white hover:shadow-xl transition-all">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-sm text-gray-500">{item.label}</span>
+                    <div
+                      className={`w-10 h-10 bg-gradient-to-br ${item.gradient} rounded-lg flex items-center justify-center`}
+                    >
+                      <IconComponent className="w-5 h-5 text-white" />
+                    </div>
+                  </div>
+                  <div className="text-3xl font-bold text-gray-900">
+                    {item.isCount ? item.amount : `₹${item.amount.toLocaleString()}`}
+                  </div>
+                </Card>
+              </motion.div>
+            );
+          })}
+        </motion.div>
+
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Ride Request */}
+            {showRideRequest && isOnline && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+              >
+                <Card className="p-6 rounded-2xl border-2 border-pink-500 shadow-lg relative overflow-hidden bg-white">
+                  <div className="absolute top-0 right-0 w-40 h-40 bg-pink-500/10 rounded-full -mr-10 -mt-10"></div>
+
+                  <div className="relative z-10">
+                    <div className="flex items-center justify-between mb-4">
+                      <h2 className="text-2xl font-bold text-gray-900">New Ride Request</h2>
+                      <span className="px-3 py-1 bg-red-500 text-white rounded-full text-sm font-semibold animate-pulse">
+                        {rideRequest.time}
+                      </span>
+                    </div>
+
+                    <div className="bg-gray-50 rounded-xl p-5 mb-6">
+                      <div className="flex items-start gap-4 mb-5">
+                        <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center text-white text-2xl font-bold">
+                          {rideRequest.passenger.charAt(0)}
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-bold text-lg text-gray-900">{rideRequest.passenger}</h3>
+                          <div className="flex items-center gap-2 mt-1">
+                            <Award className="w-4 h-4 text-yellow-500" />
+                            <span className="text-sm font-semibold text-gray-700">{rideRequest.rating}</span>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                            {rideRequest.fare}
+                          </div>
+                          <div className="text-sm text-gray-600">{rideRequest.distance}</div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-3">
+                        <div className="flex items-start gap-3">
+                          <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <MapPin className="w-4 h-4 text-white" />
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-500">Pickup</p>
+                            <p className="font-semibold text-gray-900">{rideRequest.pickup}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-3">
+                          <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <MapPin className="w-4 h-4 text-white" />
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-500">Drop</p>
+                            <p className="font-semibold text-gray-900">{rideRequest.drop}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <Button
+                        onClick={() => setShowRideRequest(false)}
+                        variant="outline"
+                        className="rounded-lg border-2"
+                      >
+                        Decline
+                      </Button>
+                      <Button className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-lg">
+                        Accept Ride
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+              </motion.div>
+            )}
+
+            {/* Online Status */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            >
+              <Card className="p-6 rounded-2xl border-0 shadow-lg">
+                <h2 className="text-xl font-bold text-gray-900 mb-4">Current Status</h2>
+
+                {isOnline ? (
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3 p-4 bg-green-50 rounded-lg border border-green-200">
+                      <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                      <span className="font-semibold text-green-700">
+                        You are online and ready for rides
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="p-4 bg-purple-50 rounded-lg">
+                        <Clock className="w-6 h-6 text-purple-600 mb-2" />
+                        <p className="text-sm text-gray-600 mb-1">Online Time</p>
+                        <p className="text-2xl font-bold text-gray-900">3h 25m</p>
+                      </div>
+                      <div className="p-4 bg-pink-50 rounded-lg">
+                        <Shield className="w-6 h-6 text-pink-600 mb-2" />
+                        <p className="text-sm text-gray-600 mb-1">Safety Score</p>
+                        <p className="text-2xl font-bold text-gray-900">100%</p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <Power className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-600 mb-4 font-semibold">You are currently offline</p>
+                    <Button
+                      onClick={() => setIsOnline(true)}
+                      className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-3 rounded-lg"
+                    >
+                      Go Online
+                    </Button>
+                  </div>
+                )}
+              </Card>
+            </motion.div>
+
+            {/* Performance Metrics */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <Card className="p-6 rounded-2xl border-0 shadow-lg">
+                <h2 className="text-xl font-bold text-gray-900 mb-4">Performance Metrics</h2>
+
+                <div className="space-y-5">
+                  <div>
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-sm text-gray-600">Driver Rating</span>
+                      <span className="font-bold text-gray-900">4.9/5.0</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-3">
+                      <div
+                        className="bg-gradient-to-r from-yellow-400 to-yellow-500 h-3 rounded-full"
+                        style={{ width: "98%" }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-sm text-gray-600">Acceptance Rate</span>
+                      <span className="font-bold text-gray-900">92%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-3">
+                      <div
+                        className="bg-gradient-to-r from-green-400 to-green-500 h-3 rounded-full"
+                        style={{ width: "92%" }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-sm text-gray-600">Completion Rate</span>
+                      <span className="font-bold text-gray-900">98%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-3">
+                      <div
+                        className="bg-gradient-to-r from-blue-400 to-blue-500 h-3 rounded-full"
+                        style={{ width: "98%" }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            </motion.div>
+
+            {/* Recent Rides */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <Card className="p-6 rounded-2xl border-0 shadow-lg">
+                <h2 className="text-xl font-bold text-gray-900 mb-4">Recent Rides</h2>
+
+                <div className="space-y-3">
+                  {recentRides.map((ride, i) => (
+                    <div
+                      key={i}
+                      className="p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors border border-gray-200"
+                    >
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <p className="font-bold text-gray-900">{ride.passenger}</p>
+                          <p className="text-xs text-gray-600">
+                            {ride.time} • {ride.distance}
+                          </p>
+                        </div>
+                        <span className="font-bold text-green-600 text-lg">{ride.fare}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            </motion.div>
+          </div>
+
+          {/* Sidebar */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-6"
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="space-y-6"
           >
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {[
-                { label: "Today", amount: earnings.today, icon: <Calendar />, color: "from-blue-500 to-blue-600" },
-                { label: "This Week", amount: earnings.week, icon: <TrendingUp />, color: "from-purple-500 to-purple-600" },
-                { label: "This Month", amount: earnings.month, icon: <DollarSign />, color: "from-pink-500 to-pink-600" },
-                { label: "Rides Today", amount: earnings.rides, icon: <Award />, color: "from-green-500 to-green-600", isCount: true }
-              ].map((item, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
+            {/* Loan Eligibility */}
+            <Card className="p-6 rounded-2xl border-0 shadow-lg bg-gradient-to-br from-purple-50 to-pink-50">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-bold text-gray-900">Loan Eligibility</h3>
+                <CreditCard className="w-5 h-5 text-purple-600" />
+              </div>
+
+              <div className="mb-5">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm text-gray-700">Eligible Amount</span>
+                  <span className="text-2xl font-bold text-purple-600">₹50,000</span>
+                </div>
+                <div className="w-full bg-gray-300 rounded-full h-2">
+                  <div
+                    className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full"
+                    style={{ width: "75%" }}
+                  ></div>
+                </div>
+                <p className="text-xs text-gray-600 mt-2">
+                  Based on your earnings & ride history
+                </p>
+              </div>
+
+              <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-lg">
+                Apply for Loan
+                <ChevronRight className="w-4 h-4 ml-2" />
+              </Button>
+            </Card>
+
+            {/* Safety Features */}
+            <Card className="p-6 rounded-2xl border-0 shadow-lg">
+              <h3 className="font-bold text-gray-900 mb-4">Safety & Insurance</h3>
+
+              <div className="space-y-3">
+                {[
+                  { label: "All Systems Active", enabled: true },
+                  { label: "GPS Tracking On", enabled: true },
+                  { label: "Dashcam Recording", enabled: true },
+                ].map((item, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center justify-between p-3 bg-green-50 rounded-lg"
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <span className="text-sm font-semibold text-gray-700">
+                        {item.label}
+                      </span>
+                    </div>
+                    {item.enabled && (
+                      <Check className="w-5 h-5 text-green-600" />
+                    )}
+                  </div>
+                ))}
+              </div>
+            </Card>
+
+            {/* Growth Tracking */}
+            <Card className="p-6 rounded-2xl border-0 shadow-lg bg-gradient-to-br from-blue-50 to-indigo-50">
+              <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-blue-600" />
+                Financial Growth
+              </h3>
+
+              <div className="space-y-4">
+                <div className="text-center">
+                  <p className="text-sm text-gray-600 mb-1">Total Earned</p>
+                  <p className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                    ₹1,28,900
+                  </p>
+                </div>
+
+                <div className="bg-white rounded-lg p-3 text-center">
+                  <p className="text-xs text-gray-500 mb-1">Next Goal</p>
+                  <p className="text-lg font-bold text-gray-900">₹2,00,000</p>
+                  <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+                    <div
+                      className="bg-gradient-to-r from-blue-500 to-indigo-500 h-2 rounded-full"
+                      style={{ width: "64%" }}
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </Card>
+
+            {/* Quick Actions */}
+            <Card className="p-6 rounded-2xl border-0 shadow-lg">
+              <h3 className="font-bold text-gray-900 mb-4">Quick Actions</h3>
+
+              <div className="space-y-2">
+                <Button
+                  variant="outline"
+                  className="w-full flex items-center gap-2 justify-between rounded-lg"
                 >
-                  <GlassCard hover className="p-6">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-gray-600">{item.label}</span>
-                      <div className={`w-10 h-10 bg-gradient-to-br ${item.color} rounded-xl flex items-center justify-center text-white`}>
-                        {item.icon}
-                      </div>
-                    </div>
-                    <div className="text-3xl font-bold text-gray-800">
-                      {item.isCount ? item.amount : `₹${item.amount.toLocaleString()}`}
-                    </div>
-                  </GlassCard>
-                </motion.div>
-              ))}
-            </div>
+                  <span>View Detailed Earnings</span>
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full flex items-center gap-2 justify-between rounded-lg"
+                >
+                  <span>Insurance & Documents</span>
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full flex items-center gap-2 justify-between rounded-lg"
+                >
+                  <span>Safety Training</span>
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              </div>
+            </Card>
           </motion.div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Left Column - Ride Requests */}
-            <div className="lg:col-span-2 space-y-6">
-              {/* Ride Request Card */}
-              {showRideRequest && isOnline && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                >
-                  <GlassCard className="p-6 border-2 border-[#FF4FA3] relative overflow-hidden">
-                    {/* Pulsing Animation */}
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#FF4FA3]/20 to-transparent rounded-full blur-2xl animate-pulse"></div>
-                    
-                    <div className="relative z-10">
-                      <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-2xl font-bold text-gray-800">New Ride Request</h2>
-                        <span className="px-3 py-1 bg-red-500 text-white rounded-full text-sm font-semibold animate-pulse">
-                          {rideRequest.time}
-                        </span>
-                      </div>
-
-                      <div className="bg-white/50 rounded-xl p-4 mb-4">
-                        <div className="flex items-start space-x-4 mb-4">
-                          <div className="w-16 h-16 bg-gradient-to-br from-[#6A0DAD] to-[#FF4FA3] rounded-2xl flex items-center justify-center text-white text-2xl font-bold">
-                            {rideRequest.passenger.charAt(0)}
-                          </div>
-                          <div className="flex-1">
-                            <h3 className="font-bold text-lg text-gray-800">{rideRequest.passenger}</h3>
-                            <div className="flex items-center space-x-2 mt-1">
-                              <Award className="text-yellow-500" size={16} />
-                              <span className="text-sm font-semibold text-gray-700">{rideRequest.rating}</span>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <div className="text-3xl font-bold text-[#6A0DAD]">{rideRequest.fare}</div>
-                            <div className="text-sm text-gray-500">{rideRequest.distance}</div>
-                          </div>
-                        </div>
-
-                        <div className="space-y-3">
-                          <div className="flex items-start space-x-3">
-                            <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
-                              <MapPin className="text-white" size={16} />
-                            </div>
-                            <div>
-                              <p className="text-sm text-gray-500">Pickup</p>
-                              <p className="font-semibold text-gray-800">{rideRequest.pickup}</p>
-                            </div>
-                          </div>
-                          <div className="flex items-start space-x-3">
-                            <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0">
-                              <MapPin className="text-white" size={16} />
-                            </div>
-                            <div>
-                              <p className="text-sm text-gray-500">Drop</p>
-                              <p className="font-semibold text-gray-800">{rideRequest.drop}</p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4">
-                        <button
-                          onClick={() => setShowRideRequest(false)}
-                          className="px-6 py-4 bg-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-300 transition-all flex items-center justify-center space-x-2"
-                        >
-                          <X size={20} />
-                          <span>Decline</span>
-                        </button>
-                        <button className="px-6 py-4 bg-gradient-to-r from-[#6A0DAD] to-[#FF4FA3] text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all flex items-center justify-center space-x-2">
-                          <Check size={20} />
-                          <span>Accept</span>
-                        </button>
-                      </div>
-                    </div>
-                  </GlassCard>
-                </motion.div>
-              )}
-
-              {/* Current Status */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-              >
-                <GlassCard className="p-6">
-                  <h2 className="text-xl font-bold mb-4 text-gray-800">Current Status</h2>
-                  
-                  {isOnline ? (
-                    <div className="space-y-4">
-                      <div className="flex items-center space-x-3 p-4 bg-green-50 rounded-xl">
-                        <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                        <span className="font-semibold text-green-700">You are online and ready for rides</span>
-                      </div>
-                      
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="p-4 bg-purple-50 rounded-xl">
-                          <Clock className="text-[#6A0DAD] mb-2" size={24} />
-                          <p className="text-sm text-gray-600">Online Time</p>
-                          <p className="text-xl font-bold text-gray-800">3h 25m</p>
-                        </div>
-                        <div className="p-4 bg-pink-50 rounded-xl">
-                          <Shield className="text-[#FF4FA3] mb-2" size={24} />
-                          <p className="text-sm text-gray-600">Safety Score</p>
-                          <p className="text-xl font-bold text-gray-800">100%</p>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="text-center py-8">
-                      <Power className="text-gray-400 mx-auto mb-3" size={48} />
-                      <p className="text-gray-600 mb-4">You are currently offline</p>
-                      <button
-                        onClick={() => setIsOnline(true)}
-                        className="px-6 py-3 bg-gradient-to-r from-[#6A0DAD] to-[#FF4FA3] text-white rounded-xl font-semibold hover:shadow-lg transition-all"
-                      >
-                        Go Online
-                      </button>
-                    </div>
-                  )}
-                </GlassCard>
-              </motion.div>
-
-              {/* Safety Alerts */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-              >
-                <GlassCard className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-bold text-gray-800">Safety Alert Indicator</h2>
-                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center">
-                      <Shield className="text-white" size={24} />
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <span className="text-sm font-semibold text-gray-700">All Systems Active</span>
-                      </div>
-                      <Check className="text-green-600" size={18} />
-                    </div>
-                    <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <span className="text-sm font-semibold text-gray-700">GPS Tracking On</span>
-                      </div>
-                      <Check className="text-green-600" size={18} />
-                    </div>
-                    <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <span className="text-sm font-semibold text-gray-700">Dashcam Recording</span>
-                      </div>
-                      <Check className="text-green-600" size={18} />
-                    </div>
-                  </div>
-                </GlassCard>
-              </motion.div>
-            </div>
-
-            {/* Right Column - Loan & Stats */}
-            <div className="space-y-6">
-              {/* Loan Eligibility */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-              >
-                <GlassCard className="p-6 bg-gradient-to-br from-[#6A0DAD]/5 to-[#FF4FA3]/5">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-bold text-gray-800">Loan Eligibility</h3>
-                    <CreditCard className="text-[#6A0DAD]" size={24} />
-                  </div>
-                  
-                  <div className="mb-4">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm text-gray-600">Eligible Amount</span>
-                      <span className="text-2xl font-bold text-[#6A0DAD]">₹50,000</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div className="bg-gradient-to-r from-[#6A0DAD] to-[#FF4FA3] h-2 rounded-full" style={{ width: "75%" }}></div>
-                    </div>
-                    <p className="text-xs text-gray-500 mt-2">Based on your earnings and ride history</p>
-                  </div>
-
-                  <button className="w-full px-4 py-3 bg-gradient-to-r from-[#6A0DAD] to-[#FF4FA3] text-white rounded-xl font-semibold hover:shadow-lg transition-all flex items-center justify-center space-x-2">
-                    <span>Apply for Loan</span>
-                    <ChevronRight size={18} />
-                  </button>
-                </GlassCard>
-              </motion.div>
-
-              {/* Performance Stats */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.1 }}
-              >
-                <GlassCard className="p-6">
-                  <h3 className="font-bold mb-4 text-gray-800">Performance</h3>
-                  
-                  <div className="space-y-4">
-                    <div>
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="text-sm text-gray-600">Rating</span>
-                        <span className="font-bold text-gray-800">4.9/5.0</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div className="bg-gradient-to-r from-yellow-400 to-yellow-500 h-2 rounded-full" style={{ width: "98%" }}></div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="text-sm text-gray-600">Acceptance Rate</span>
-                        <span className="font-bold text-gray-800">92%</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div className="bg-gradient-to-r from-green-400 to-green-500 h-2 rounded-full" style={{ width: "92%" }}></div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="text-sm text-gray-600">Completion Rate</span>
-                        <span className="font-bold text-gray-800">98%</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div className="bg-gradient-to-r from-blue-400 to-blue-500 h-2 rounded-full" style={{ width: "98%" }}></div>
-                      </div>
-                    </div>
-                  </div>
-                </GlassCard>
-              </motion.div>
-
-              {/* Recent Activity */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 }}
-              >
-                <GlassCard className="p-6">
-                  <h3 className="font-bold mb-4 text-gray-800">Recent Rides</h3>
-                  
-                  <div className="space-y-3">
-                    {[
-                      { time: "2:30 PM", fare: "₹180", distance: "12 km", passenger: "Neha K." },
-                      { time: "1:15 PM", fare: "₹95", distance: "6 km", passenger: "Priya S." },
-                      { time: "11:45 AM", fare: "₹220", distance: "15 km", passenger: "Anjali M." }
-                    ].map((ride, i) => (
-                      <div key={i} className="p-3 bg-purple-50 rounded-lg">
-                        <div className="flex justify-between items-start mb-1">
-                          <div>
-                            <p className="font-semibold text-gray-800">{ride.passenger}</p>
-                            <p className="text-xs text-gray-500">{ride.time} • {ride.distance}</p>
-                          </div>
-                          <span className="font-bold text-[#6A0DAD]">{ride.fare}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </GlassCard>
-              </motion.div>
-
-              {/* Quick Actions */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3 }}
-              >
-                <GlassCard className="p-6">
-                  <h3 className="font-bold mb-4 text-gray-800">Quick Actions</h3>
-                  
-                  <div className="space-y-2">
-                    <button className="w-full px-4 py-3 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors text-left flex items-center justify-between">
-                      <span className="text-sm font-semibold text-gray-700">View Earnings</span>
-                      <ChevronRight size={18} className="text-gray-500" />
-                    </button>
-                    <button className="w-full px-4 py-3 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors text-left flex items-center justify-between">
-                      <span className="text-sm font-semibold text-gray-700">Insurance Details</span>
-                      <ChevronRight size={18} className="text-gray-500" />
-                    </button>
-                    <button className="w-full px-4 py-3 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors text-left flex items-center justify-between">
-                      <span className="text-sm font-semibold text-gray-700">Safety Training</span>
-                      <ChevronRight size={18} className="text-gray-500" />
-                    </button>
-                  </div>
-                </GlassCard>
-              </motion.div>
-            </div>
-          </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

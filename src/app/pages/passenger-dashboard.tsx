@@ -1,339 +1,369 @@
-import { Header } from "../components/header";
-import { GlassCard } from "../components/glass-card";
-import { motion } from "motion/react";
-import { 
-  MapPin, Navigation, Clock, Star, AlertOctagon,
-  User, Phone, MessageCircle, DollarSign, Car, Bike
-} from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router";
+import { motion } from "motion/react";
+import {
+  MapPin,
+  Clock,
+  DollarSign,
+  Shield,
+  AlertCircle,
+  User,
+  LogOut,
+  ChevronRight,
+  Star,
+  Phone,
+  Navigation,
+  CheckCircle,
+  TrendingUp,
+} from "lucide-react";
+import { Button } from "../components/ui/button";
+import { Card } from "../components/ui/card";
 
 export function PassengerDashboard() {
-  const [pickup, setPickup] = useState("");
-  const [drop, setDrop] = useState("");
-  const [rideType, setRideType] = useState<"cab" | "bike">("cab");
-  const [rideStatus, setRideStatus] = useState<"searching" | "matched" | "ongoing" | null>(null);
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const [activeRide, setActiveRide] = useState<{
+    id: string;
+    driver: string;
+    driverRating: number;
+    pickup: string;
+    destination: string;
+    eta: string;
+    price: string;
+    status: string;
+  } | null>(null);
 
-  const currentDriver = {
-    name: "Priya Sharma",
-    rating: 4.9,
-    rides: 1250,
-    vehicle: "Honda City - DL 3C AB 1234",
-    phone: "+91 98765 43210",
-    photo: "https://images.unsplash.com/photo-1575997759025-5cb986a6041d?w=150"
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-pink-50/20">
-      <Header />
+  const rideHistory = [
+    {
+      id: "1",
+      driver: "Priya Singh",
+      rating: 4.9,
+      from: "Downtown Market",
+      to: "Tech Park Office",
+      date: "Today, 10:30 AM",
+      amount: "₹245",
+      status: "Completed",
+    },
+    {
+      id: "2",
+      driver: "Anjali Kumar",
+      rating: 4.8,
+      from: "Home",
+      to: "Shopping Mall",
+      date: "Yesterday, 2:15 PM",
+      amount: "₹180",
+      status: "Completed",
+    },
+    {
+      id: "3",
+      driver: "Neha Patel",
+      rating: 5.0,
+      from: "Station",
+      to: "Hospital",
+      date: "2 days ago",
+      amount: "₹320",
+      status: "Completed",
+    },
+  ];
 
-      <div className="pt-20 px-4 sm:px-6 lg:px-8 pb-12">
-        <div className="max-w-7xl mx-auto">
+  const safetyFeatures = [
+    { name: "SOS Button", active: true, icon: AlertCircle },
+    { name: "Share Trip", active: true, icon: Navigation },
+    { name: "Driver Verification", active: true, icon: Shield },
+    { name: "Real-time Tracking", active: true, icon: MapPin },
+  ];
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-pink-50/30 to-purple-50/20">
+      {/* Header */}
+      <header className="sticky top-0 z-50 backdrop-blur-xl bg-white/50 border-b border-gray-200/50">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center">
+              <span className="text-white font-bold">{user?.name.charAt(0)}</span>
+            </div>
+            <div>
+              <h1 className="font-bold text-gray-900">Welcome, {user?.name}</h1>
+              <p className="text-xs text-gray-500">Passenger Account</p>
+            </div>
+          </div>
+
+          <Button
+            onClick={handleLogout}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <LogOut className="w-4 h-4" />
+            Logout
+          </Button>
+        </div>
+      </header>
+
+      <main className="max-w-7xl mx-auto px-4 md:px-8 py-8">
+        {/* Quick Actions */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="grid md:grid-cols-3 gap-6 mb-8"
+        >
+          <Card className="group cursor-pointer relative p-6 rounded-2xl border-0 shadow-lg hover:shadow-xl transition-all bg-gradient-to-br from-pink-500 to-rose-500 text-white overflow-hidden">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-10 -mt-10"></div>
+            <div className="relative z-10">
+              <MapPin className="w-8 h-8 mb-3 opacity-80" />
+              <h3 className="text-lg font-bold mb-1">Book a Ride</h3>
+              <p className="text-sm opacity-90 mb-4">Start your journey now</p>
+              <div className="flex items-center gap-2 text-sm font-semibold opacity-80 group-hover:opacity-100">
+                Get Started <ChevronRight className="w-4 h-4" />
+              </div>
+            </div>
+          </Card>
+
+          <Card className="group cursor-pointer relative p-6 rounded-2xl border-0 shadow-lg hover:shadow-xl transition-all bg-gradient-to-br from-purple-500 to-indigo-500 text-white overflow-hidden">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-10 -mt-10"></div>
+            <div className="relative z-10">
+              <Shield className="w-8 h-8 mb-3 opacity-80" />
+              <h3 className="text-lg font-bold mb-1">Safety Features</h3>
+              <p className="text-sm opacity-90 mb-4">Stay protected always</p>
+              <div className="flex items-center gap-2 text-sm font-semibold opacity-80 group-hover:opacity-100">
+                View Details <ChevronRight className="w-4 h-4" />
+              </div>
+            </div>
+          </Card>
+
+          <Card className="group cursor-pointer relative p-6 rounded-2xl border-0 shadow-lg hover:shadow-xl transition-all bg-gradient-to-br from-violet-500 to-blue-500 text-white overflow-hidden">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-10 -mt-10"></div>
+            <div className="relative z-10">
+              <TrendingUp className="w-8 h-8 mb-3 opacity-80" />
+              <h3 className="text-lg font-bold mb-1">Your Stats</h3>
+              <p className="text-sm opacity-90 mb-4">View your activity</p>
+              <div className="flex items-center gap-2 text-sm font-semibold opacity-80 group-hover:opacity-100">
+                See More <ChevronRight className="w-4 h-4" />
+              </div>
+            </div>
+          </Card>
+        </motion.div>
+
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Active Ride / Book Ride CTA */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            >
+              {!activeRide ? (
+                <Card className="p-8 rounded-2xl border-0 shadow-lg bg-gradient-to-br from-pink-50 to-purple-50">
+                  <div className="text-center">
+                    <MapPin className="w-12 h-12 mx-auto mb-4 text-pink-500" />
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">Ready to Ride?</h2>
+                    <p className="text-gray-600 mb-6">
+                      Book a ride now and get matched with a verified driver in seconds
+                    </p>
+                    <Button className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white px-8 py-3 rounded-lg font-semibold">
+                      Book Your Ride
+                    </Button>
+                  </div>
+                </Card>
+              ) : (
+                <Card className="p-8 rounded-2xl border-0 shadow-lg">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Your Current Ride</h2>
+                  {/* Active ride details */}
+                  <div className="space-y-6">
+                    <div className="flex items-center gap-4">
+                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-pink-200 to-rose-200 flex items-center justify-center">
+                        <User className="w-8 h-8 text-pink-600" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-lg">{activeRide.driver}</h3>
+                        <div className="flex items-center gap-2">
+                          <div className="flex gap-1">
+                            {[...Array(5)].map((_, i) => (
+                              <Star
+                                key={i}
+                                className={`w-4 h-4 ${i < Math.floor(activeRide.driverRating)
+                                    ? "fill-yellow-400 text-yellow-400"
+                                    : "text-gray-300"
+                                  }`}
+                              />
+                            ))}
+                          </div>
+                          <span className="text-sm text-gray-600">{activeRide.driverRating}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+                      <div className="flex items-center gap-3">
+                        <MapPin className="w-5 h-5 text-pink-500" />
+                        <div>
+                          <p className="text-xs text-gray-500">PICKUP</p>
+                          <p className="font-semibold text-gray-900">{activeRide.pickup}</p>
+                        </div>
+                      </div>
+                      <div className="border-t border-gray-200 my-2"></div>
+                      <div className="flex items-center gap-3">
+                        <Navigation className="w-5 h-5 text-purple-500" />
+                        <div>
+                          <p className="text-xs text-gray-500">DESTINATION</p>
+                          <p className="font-semibold text-gray-900">{activeRide.destination}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="bg-blue-50 rounded-lg p-4 text-center">
+                        <Clock className="w-5 h-5 mx-auto mb-2 text-blue-500" />
+                        <p className="text-xs text-gray-600 mb-1">ETA</p>
+                        <p className="font-bold text-gray-900">{activeRide.eta}</p>
+                      </div>
+                      <div className="bg-green-50 rounded-lg p-4 text-center">
+                        <DollarSign className="w-5 h-5 mx-auto mb-2 text-green-500" />
+                        <p className="text-xs text-gray-600 mb-1">Price</p>
+                        <p className="font-bold text-gray-900">{activeRide.price}</p>
+                      </div>
+                      <div className="bg-purple-50 rounded-lg p-4 text-center">
+                        <Shield className="w-5 h-5 mx-auto mb-2 text-purple-500" />
+                        <p className="text-xs text-gray-600 mb-1">Status</p>
+                        <p className="font-bold text-gray-900 text-sm">{activeRide.status}</p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <Button
+                        variant="outline"
+                        className="rounded-lg border-2 hover:bg-gray-50"
+                      >
+                        <Phone className="w-4 h-4 mr-2" />
+                        Call Driver
+                      </Button>
+                      <Button className="bg-red-500 hover:bg-red-600 text-white rounded-lg">
+                        <AlertCircle className="w-4 h-4 mr-2" />
+                        Emergency SOS
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+              )}
+            </motion.div>
+
+            {/* Ride History */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <Card className="p-6 rounded-2xl border-0 shadow-lg">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">Recent Rides</h2>
+                <div className="space-y-4">
+                  {rideHistory.map((ride) => (
+                    <div key={ride.id} className="flex items-center justify-between p-4 rounded-lg hover:bg-gray-50 transition-colors border border-gray-200">
+                      <div className="flex items-center gap-4 flex-1">
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-200 to-rose-200 flex items-center justify-center">
+                          <User className="w-6 h-6 text-pink-600" />
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-bold text-gray-900">{ride.driver}</h4>
+                          <p className="text-sm text-gray-600">{ride.from} → {ride.to}</p>
+                          <p className="text-xs text-gray-500">{ride.date}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <div className="flex gap-1">
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className={`w-4 h-4 ${i < Math.floor(ride.rating)
+                                  ? "fill-yellow-400 text-yellow-400"
+                                  : "text-gray-300"
+                                }`}
+                            />
+                          ))}
+                        </div>
+                        <div className="text-right">
+                          <p className="font-bold text-gray-900">{ride.amount}</p>
+                          <p className="text-xs text-green-600 font-semibold">{ride.status}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            </motion.div>
+          </div>
+
+          {/* Sidebar */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-8"
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="space-y-6"
           >
-            <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-[#6A0DAD] to-[#FF4FA3] bg-clip-text text-transparent">
-              Passenger Dashboard
-            </h1>
-            <p className="text-gray-600">Book your safe ride with verified women drivers</p>
+            {/* Safety Features */}
+            <Card className="p-6 rounded-2xl border-0 shadow-lg">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Safety Features</h3>
+              <div className="space-y-3">
+                {safetyFeatures.map((feature) => {
+                  const Icon = feature.icon;
+                  return (
+                    <div key={feature.name} className="flex items-center gap-3 p-3 rounded-lg bg-gradient-to-r from-pink-50 to-purple-50 group hover:shadow-md transition-shadow">
+                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center">
+                        <Icon className="w-5 h-5 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-semibold text-gray-900">{feature.name}</p>
+                        <p className="text-xs text-gray-600">
+                          {feature.active ? "✓ Active" : "Inactive"}
+                        </p>
+                      </div>
+                      {feature.active && (
+                        <CheckCircle className="w-5 h-5 text-green-500" />
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </Card>
+
+            {/* Quick Stats */}
+            <Card className="p-6 rounded-2xl border-0 shadow-lg bg-gradient-to-br from-pink-500 to-rose-500 text-white">
+              <h3 className="text-lg font-bold mb-4">Your Stats</h3>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm opacity-90">Total Rides</span>
+                  <span className="text-2xl font-bold">24</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm opacity-90">Avg. Rating</span>
+                  <span className="text-2xl font-bold">4.9</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm opacity-90">Money Saved</span>
+                  <span className="text-2xl font-bold">₹880</span>
+                </div>
+              </div>
+            </Card>
+
+            {/* Help & Support */}
+            <Card className="p-6 rounded-2xl border-0 shadow-lg">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Need Help?</h3>
+              <Button className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white rounded-lg mb-3">
+                Contact Support
+              </Button>
+              <Button variant="outline" className="w-full rounded-lg">
+                View FAQs
+              </Button>
+            </Card>
           </motion.div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Left Column - Booking */}
-            <div className="lg:col-span-1 space-y-6">
-              {/* Booking Card */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-              >
-                <GlassCard className="p-6">
-                  <h2 className="text-2xl font-bold mb-6 text-gray-800">Book a Ride</h2>
-                  
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm mb-2 text-gray-700">Pickup Location</label>
-                      <div className="relative">
-                        <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#6A0DAD]" size={20} />
-                        <input
-                          type="text"
-                          value={pickup}
-                          onChange={(e) => setPickup(e.target.value)}
-                          placeholder="Enter pickup location"
-                          className="w-full pl-12 pr-4 py-3 border border-purple-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6A0DAD]/50 bg-white"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm mb-2 text-gray-700">Drop Location</label>
-                      <div className="relative">
-                        <Navigation className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#FF4FA3]" size={20} />
-                        <input
-                          type="text"
-                          value={drop}
-                          onChange={(e) => setDrop(e.target.value)}
-                          placeholder="Enter drop location"
-                          className="w-full pl-12 pr-4 py-3 border border-purple-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6A0DAD]/50 bg-white"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm mb-2 text-gray-700">Ride Type</label>
-                      <div className="grid grid-cols-2 gap-3">
-                        <button
-                          onClick={() => setRideType("cab")}
-                          className={`py-4 rounded-xl border-2 transition-all flex flex-col items-center space-y-2 ${
-                            rideType === "cab"
-                              ? "border-[#6A0DAD] bg-[#6A0DAD]/10"
-                              : "border-purple-200 hover:border-purple-300"
-                          }`}
-                        >
-                          <Car size={24} className={rideType === "cab" ? "text-[#6A0DAD]" : "text-gray-500"} />
-                          <span className={`font-semibold ${rideType === "cab" ? "text-[#6A0DAD]" : "text-gray-700"}`}>
-                            Cab
-                          </span>
-                          <span className="text-xs text-gray-500">₹12/km</span>
-                        </button>
-                        <button
-                          onClick={() => setRideType("bike")}
-                          className={`py-4 rounded-xl border-2 transition-all flex flex-col items-center space-y-2 ${
-                            rideType === "bike"
-                              ? "border-[#FF4FA3] bg-[#FF4FA3]/10"
-                              : "border-purple-200 hover:border-purple-300"
-                          }`}
-                        >
-                          <Bike size={24} className={rideType === "bike" ? "text-[#FF4FA3]" : "text-gray-500"} />
-                          <span className={`font-semibold ${rideType === "bike" ? "text-[#FF4FA3]" : "text-gray-700"}`}>
-                            Bike
-                          </span>
-                          <span className="text-xs text-gray-500">₹6/km</span>
-                        </button>
-                      </div>
-                    </div>
-
-                    <button
-                      onClick={() => setRideStatus("matched")}
-                      className="w-full py-4 bg-gradient-to-r from-[#6A0DAD] to-[#FF4FA3] text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all"
-                    >
-                      Find Driver
-                    </button>
-                  </div>
-                </GlassCard>
-              </motion.div>
-
-              {/* Quick Actions */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.1 }}
-              >
-                <GlassCard className="p-6">
-                  <h3 className="font-bold mb-4 text-gray-800">Recent Locations</h3>
-                  <div className="space-y-3">
-                    {["Home - Sector 12, Noida", "Office - Connaught Place", "Mall - Select City Walk"].map((location, i) => (
-                      <button
-                        key={i}
-                        className="w-full text-left px-4 py-3 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors flex items-center space-x-3"
-                      >
-                        <Clock size={16} className="text-[#6A0DAD]" />
-                        <span className="text-sm text-gray-700">{location}</span>
-                      </button>
-                    ))}
-                  </div>
-                </GlassCard>
-              </motion.div>
-            </div>
-
-            {/* Center Column - Map */}
-            <div className="lg:col-span-1">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-              >
-                <GlassCard className="p-6 h-[600px] relative overflow-hidden">
-                  <h2 className="text-xl font-bold mb-4 text-gray-800">Live Map</h2>
-                  
-                  {/* Mock Map */}
-                  <div className="absolute inset-6 bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl flex items-center justify-center">
-                    <div className="text-center">
-                      <MapPin size={48} className="text-[#6A0DAD] mx-auto mb-2" />
-                      <p className="text-gray-600">Map Interface</p>
-                      <p className="text-sm text-gray-500">Real-time tracking enabled</p>
-                    </div>
-                  </div>
-
-                  {/* Route Overlay */}
-                  {rideStatus === "ongoing" && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="absolute top-20 left-6 right-6 bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-purple-200"
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-semibold text-gray-700">Estimated Arrival</span>
-                        <span className="text-lg font-bold text-[#6A0DAD]">12 mins</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-semibold text-gray-700">Distance</span>
-                        <span className="text-lg font-bold text-[#FF4FA3]">5.2 km</span>
-                      </div>
-                    </motion.div>
-                  )}
-
-                  {/* SOS Button - Floating */}
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="absolute bottom-6 right-6 w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-full shadow-2xl flex items-center justify-center hover:shadow-red-500/50 transition-all z-10"
-                  >
-                    <AlertOctagon className="text-white" size={28} />
-                  </motion.button>
-                </GlassCard>
-              </motion.div>
-            </div>
-
-            {/* Right Column - Driver Info & Status */}
-            <div className="lg:col-span-1 space-y-6">
-              {rideStatus === "matched" || rideStatus === "ongoing" ? (
-                <>
-                  {/* Driver Info */}
-                  <motion.div
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                  >
-                    <GlassCard className="p-6">
-                      <h2 className="text-xl font-bold mb-4 text-gray-800">Your Driver</h2>
-                      
-                      <div className="flex items-start space-x-4 mb-6">
-                        <img
-                          src={currentDriver.photo}
-                          alt={currentDriver.name}
-                          className="w-20 h-20 rounded-2xl object-cover border-2 border-purple-200"
-                        />
-                        <div className="flex-1">
-                          <h3 className="font-bold text-lg text-gray-800">{currentDriver.name}</h3>
-                          <div className="flex items-center space-x-2 mt-1">
-                            <Star className="text-yellow-500 fill-yellow-500" size={16} />
-                            <span className="font-semibold text-gray-700">{currentDriver.rating}</span>
-                            <span className="text-sm text-gray-500">({currentDriver.rides} rides)</span>
-                          </div>
-                          <p className="text-sm text-gray-600 mt-1">{currentDriver.vehicle}</p>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-3">
-                        <button className="flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-[#6A0DAD] to-[#FF4FA3] text-white rounded-xl hover:shadow-lg transition-all">
-                          <Phone size={18} />
-                          <span>Call</span>
-                        </button>
-                        <button className="flex items-center justify-center space-x-2 px-4 py-3 bg-white border-2 border-[#6A0DAD] text-[#6A0DAD] rounded-xl hover:bg-[#6A0DAD] hover:text-white transition-all">
-                          <MessageCircle size={18} />
-                          <span>Chat</span>
-                        </button>
-                      </div>
-                    </GlassCard>
-                  </motion.div>
-
-                  {/* Ride Status */}
-                  <motion.div
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1 }}
-                  >
-                    <GlassCard className="p-6">
-                      <h3 className="font-bold mb-4 text-gray-800">Ride Status</h3>
-                      
-                      <div className="space-y-4">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center">
-                            <User className="text-white" size={20} />
-                          </div>
-                          <div>
-                            <p className="font-semibold text-gray-800">Driver Assigned</p>
-                            <p className="text-sm text-gray-500">2 mins ago</p>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
-                            <Navigation className="text-white" size={20} />
-                          </div>
-                          <div>
-                            <p className="font-semibold text-gray-800">Driver En Route</p>
-                            <p className="text-sm text-gray-500">Arriving in 5 mins</p>
-                          </div>
-                        </div>
-
-                        <div className="pt-4 border-t border-purple-200">
-                          <div className="flex justify-between items-center mb-2">
-                            <span className="text-gray-700">Estimated Fare</span>
-                            <span className="text-2xl font-bold text-[#6A0DAD]">₹145</span>
-                          </div>
-                          <p className="text-xs text-gray-500">Final fare may vary based on actual distance</p>
-                        </div>
-                      </div>
-                    </GlassCard>
-                  </motion.div>
-                </>
-              ) : (
-                <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                >
-                  <GlassCard className="p-6">
-                    <h3 className="font-bold mb-4 text-gray-800">Safety Features</h3>
-                    <div className="space-y-4">
-                      {[
-                        { icon: <AlertOctagon className="text-red-500" />, text: "24/7 SOS Button" },
-                        { icon: <MapPin className="text-[#6A0DAD]" />, text: "Live Location Sharing" },
-                        { icon: <User className="text-[#FF4FA3]" />, text: "Verified Women Drivers" },
-                        { icon: <Star className="text-yellow-500" />, text: "Rated 4.8+ Drivers Only" }
-                      ].map((feature, i) => (
-                        <div key={i} className="flex items-center space-x-3 p-3 bg-purple-50 rounded-lg">
-                          {feature.icon}
-                          <span className="text-sm text-gray-700">{feature.text}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </GlassCard>
-                </motion.div>
-              )}
-
-              {/* Recent Rides */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 }}
-              >
-                <GlassCard className="p-6">
-                  <h3 className="font-bold mb-4 text-gray-800">Recent Rides</h3>
-                  <div className="space-y-3">
-                    {[
-                      { date: "Today, 10:30 AM", fare: "₹120", rating: 5 },
-                      { date: "Yesterday, 6:45 PM", fare: "₹95", rating: 5 },
-                      { date: "Feb 22, 2:15 PM", fare: "₹180", rating: 4 }
-                    ].map((ride, i) => (
-                      <div key={i} className="p-3 bg-purple-50 rounded-lg">
-                        <div className="flex justify-between items-start mb-1">
-                          <span className="text-sm text-gray-600">{ride.date}</span>
-                          <span className="font-semibold text-[#6A0DAD]">{ride.fare}</span>
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          {[...Array(ride.rating)].map((_, i) => (
-                            <Star key={i} size={14} className="text-yellow-500 fill-yellow-500" />
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </GlassCard>
-              </motion.div>
-            </div>
-          </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
