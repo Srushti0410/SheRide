@@ -68,7 +68,7 @@ export function Footer() {
               </li>
               <li className="flex items-center space-x-2">
                 <MapPin size={16} />
-                <span>San Francisco, CA</span>
+                <span>India</span>
               </li>
             </ul>
           </div>
