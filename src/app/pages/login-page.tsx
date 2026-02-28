@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import { motion } from "motion/react";
-import { Users, Car, Settings, ArrowRight, Shield, TrendingUp, Zap } from "lucide-react";
+import { Users, Car, Settings, ArrowRight, Shield } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 
@@ -59,18 +59,17 @@ export function LoginPage() {
       name,
       email,
       role: selectedRole as "passenger" | "driver" | "admin",
+      isProfileComplete: selectedRole === "admin", // Admins don't need profile completion
     };
 
     login(user);
 
-    // Redirect based on role
-    const dashboardPaths = {
-      passenger: "/passenger",
-      driver: "/driver",
-      admin: "/admin",
-    };
-
-    navigate(dashboardPaths[selectedRole]);
+    // Redirect based on role: admins skip profile completion
+    if (selectedRole === "admin") {
+      navigate("/admin");
+    } else {
+      navigate("/profile-completion");
+    }
   };
 
   return (
@@ -122,14 +121,14 @@ export function LoginPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: index * 0.1 }}
                     onClick={() => handleRoleSelect(role.id as "passenger" | "driver" | "admin")}
-                    className={`group cursor-pointer relative p-6 rounded-2xl transition-all duration-300 border-2 hover:border-transparent ${selectedRole === role.id
-                        ? `border-transparent bg-gradient-to-br ${role.bgGradient}`
+                    className={`group cursor-pointer relative p-6 rounded-2xl transition-all duration-300 border-2 ${selectedRole === role.id
+                        ? "border-transparent bg-gray-700/50 ring-2 ring-opacity-50 ring-gray-600"
                         : "border-gray-700 bg-gray-800/50 hover:bg-gray-800"
                       }`}
                   >
                     {/* Gradient background on hover */}
                     <div
-                      className={`absolute inset-0 opacity-0 group-hover:opacity-100 rounded-2xl transition-opacity bg-gradient-to-br ${role.bgGradient}`}
+                      className={`absolute inset-0 opacity-0 group-hover:opacity-100 rounded-2xl transition-opacity bg-gray-700/50`}
                     ></div>
 
                     <div className="relative z-10">
@@ -137,14 +136,14 @@ export function LoginPage() {
                         <role.icon className={`w-8 h-8 text-white`} />
                       </div>
 
-                      <h3 className="text-xl font-bold text-white mb-2">{role.title}</h3>
-                      <p className="text-sm text-gray-300 mb-4">{role.description}</p>
+                      <h3 className="text-xl font-bold text-gray-100 mb-2">{role.title}</h3>
+                      <p className="text-sm text-gray-400 mb-4">{role.description}</p>
 
                       <div className="space-y-2">
                         {role.benefits.map((benefit) => (
                           <div key={benefit} className="flex items-center gap-2 text-sm text-gray-300">
                             <div className={`w-1.5 h-1.5 rounded-full bg-gradient-to-r ${role.gradient}`}></div>
-                            {benefit}
+                            <span className="text-gray-300">{benefit}</span>
                           </div>
                         ))}
                       </div>
@@ -233,7 +232,7 @@ export function LoginPage() {
             </motion.div>
           )}
         </div>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 }

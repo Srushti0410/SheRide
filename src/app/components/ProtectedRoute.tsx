@@ -5,9 +5,14 @@ import { ReactNode } from "react";
 interface ProtectedRouteProps {
   children: ReactNode;
   requiredRoles?: UserRole[];
+  requireProfileComplete?: boolean;
 }
 
-export function ProtectedRoute({ children, requiredRoles = [] }: ProtectedRouteProps) {
+export function ProtectedRoute({
+  children,
+  requiredRoles = [],
+  requireProfileComplete = true,
+}: ProtectedRouteProps) {
   const { user, isAuthenticated } = useAuth();
 
   if (!isAuthenticated || !user) {
@@ -16,6 +21,10 @@ export function ProtectedRoute({ children, requiredRoles = [] }: ProtectedRouteP
 
   if (requiredRoles.length > 0 && !requiredRoles.includes(user.role)) {
     return <Navigate to="/" replace />;
+  }
+
+  if (requireProfileComplete && !user.isProfileComplete) {
+    return <Navigate to="/profile-completion" replace />;
   }
 
   return <>{children}</>;

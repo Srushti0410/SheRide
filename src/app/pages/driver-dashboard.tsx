@@ -8,7 +8,6 @@ import {
   DollarSign,
   TrendingUp,
   Clock,
-  User,
   LogOut,
   Check,
   Shield,
@@ -16,11 +15,21 @@ import {
   Calendar,
   CreditCard,
   ChevronRight,
-  AlertCircle,
-  Car,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
+import { TimeAccessInfo } from "../components/TimeAccessInfo";
+import { SafetyAlert } from "../components/SafetyAlert";
+import { MapComponent } from "../components/MapComponent";
+import {
+  EarningsChart,
+  DocumentVerification,
+  TripStatistics,
+  EmergencyFeatures,
+  MaintenanceReminders,
+  BonusTracking,
+  NightSafetyMode,
+} from "../components/DriverEnhancedFeatures";
 
 export function DriverDashboard() {
   const { user, logout } = useAuth();
@@ -76,8 +85,8 @@ export function DriverDashboard() {
               whileTap={{ scale: 0.95 }}
               onClick={() => setIsOnline(!isOnline)}
               className={`px-6 py-2 rounded-full font-semibold transition-all flex items-center gap-2 ${isOnline
-                  ? "bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg shadow-green-500/30"
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                ? "bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg shadow-green-500/30"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                 }`}
             >
               <Power className="w-4 h-4" />
@@ -156,6 +165,58 @@ export function DriverDashboard() {
             );
           })}
         </motion.div>
+
+        {/* Time-Based Access & Safety Information */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="grid lg:grid-cols-2 gap-6 mb-8"
+        >
+          <TimeAccessInfo userGender={user?.profile?.gender} className="bg-white" />
+          {user?.profile?.homeLocation && (
+            <SafetyAlert
+              latitude={user.profile.homeLocation.lat}
+              longitude={user.profile.homeLocation.lng}
+              radiusKm={5}
+              className="bg-white"
+            />
+          )}
+        </motion.div>
+
+        {/* Crime Heatmap for Safe Route Selection */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="mb-8"
+        >
+          <Card className="p-6 rounded-2xl border-0 shadow-lg">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">Safe Routes & Areas</h2>
+            <p className="text-gray-600 text-sm mb-4">
+              Plan your routes based on safety ratings and crime hotspots
+            </p>
+            <MapComponent showHeatmap={true} interactive={true} />
+          </Card>
+        </motion.div>
+
+        {/* New Enhanced Features Section */}
+        <div className="grid lg:grid-cols-2 gap-6 mb-8">
+          <EarningsChart />
+          <BonusTracking />
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-6 mb-8">
+          <DocumentVerification />
+          <TripStatistics />
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-6 mb-8">
+          <EmergencyFeatures />
+          <MaintenanceReminders />
+        </div>
+
+        <NightSafetyMode />
 
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Main Content */}

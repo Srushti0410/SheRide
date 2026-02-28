@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router";
 import { LandingPage } from "./pages/landing-page";
 import { LoginPage } from "./pages/login-page";
+import { ProfileCompletionPage } from "./pages/profile-completion";
 import { PassengerDashboard } from "./pages/passenger-dashboard";
 import { DriverDashboard } from "./pages/driver-dashboard";
 import { SafetyPage } from "./pages/safety-page";
@@ -18,9 +19,17 @@ export const router = createBrowserRouter([
     Component: LoginPage,
   },
   {
+    path: "/profile-completion",
+    Component: () => (
+      <ProtectedRoute requireProfileComplete={false}>
+        <ProfileCompletionPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
     path: "/passenger",
     Component: () => (
-      <ProtectedRoute requiredRoles={["passenger"]}>
+      <ProtectedRoute requiredRoles={["passenger"]} requireProfileComplete={true}>
         <PassengerDashboard />
       </ProtectedRoute>
     ),
@@ -28,7 +37,7 @@ export const router = createBrowserRouter([
   {
     path: "/driver",
     Component: () => (
-      <ProtectedRoute requiredRoles={["driver"]}>
+      <ProtectedRoute requiredRoles={["driver"]} requireProfileComplete={true}>
         <DriverDashboard />
       </ProtectedRoute>
     ),
@@ -36,7 +45,7 @@ export const router = createBrowserRouter([
   {
     path: "/admin",
     Component: () => (
-      <ProtectedRoute requiredRoles={["admin"]}>
+      <ProtectedRoute requiredRoles={["admin"]} requireProfileComplete={false}>
         <AdminDashboard />
       </ProtectedRoute>
     ),
