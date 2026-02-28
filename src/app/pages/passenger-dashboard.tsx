@@ -45,6 +45,8 @@ export function PassengerDashboard() {
   const [showSafety, setShowSafety] = useState(false);
   const [showStats, setShowStats] = useState(false);
   const [showRideOptions, setShowRideOptions] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<"UPI" | "Card" | "Wallet" | "Cash">("UPI");
+  const [walletBalance] = useState(1280);
   const [routeData, setRouteData] = useState<{
     distance: number;
     time: number;
@@ -125,6 +127,25 @@ export function PassengerDashboard() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 md:px-8 py-8">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="mb-6"
+        >
+          <Card className="p-4 rounded-2xl border-0 shadow-lg bg-gradient-to-r from-pink-50 to-violet-50">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+              <div>
+                <p className="font-bold text-gray-900">Women-Only + LGBTQ Friendly Mobility</p>
+                <p className="text-sm text-gray-600">Choose Bike, Cab, or Rickshaw with verified drivers and live safety tracking.</p>
+              </div>
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-white border border-pink-200 text-pink-700 w-fit">
+                Safety Verified Platform
+              </span>
+            </div>
+          </Card>
+        </motion.div>
+
         {/* Quick Actions */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -501,10 +522,35 @@ export function PassengerDashboard() {
             />
           )}
 
+          {/* Payment & Wallet */}
+          {selectedRide && !showRideOptions && (
+            <div className="px-4 pb-2">
+              <Card className="p-4 rounded-2xl border border-gray-200 shadow-sm">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-semibold text-gray-900">Payment Method</h3>
+                  <span className="text-sm text-emerald-600 font-semibold">Wallet ₹{walletBalance}</span>
+                </div>
+                <div className="grid grid-cols-4 gap-2">
+                  {(["UPI", "Card", "Wallet", "Cash"] as const).map((method) => (
+                    <Button
+                      key={method}
+                      variant={paymentMethod === method ? "default" : "outline"}
+                      className={`rounded-lg text-xs ${paymentMethod === method ? "bg-pink-500 hover:bg-pink-600" : ""}`}
+                      onClick={() => setPaymentMethod(method)}
+                    >
+                      {method}
+                    </Button>
+                  ))}
+                </div>
+              </Card>
+            </div>
+          )}
+
           {/* Booking Button */}
           {selectedRide && !showRideOptions && (
             <BookingButton
               selectedRide={selectedRide}
+              paymentMethod={paymentMethod}
               onConfirm={() => {
                 setTripStatus("pickup");
                 setTimeout(() => setTripStatus("ontrip"), 5000);

@@ -15,6 +15,7 @@ import {
   Phone,
   AlertCircle as SOS,
   Car,
+  GraduationCap,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
@@ -120,16 +121,16 @@ export function DocumentVerification() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.05 }}
                 className={`p-4 rounded-lg border-2 ${isExpiring
-                    ? "border-orange-200 bg-orange-50"
-                    : "border-green-200 bg-green-50"
+                  ? "border-orange-200 bg-orange-50"
+                  : "border-green-200 bg-green-50"
                   }`}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <Icon
                       className={`w-5 h-5 ${isExpiring
-                          ? "text-orange-600"
-                          : "text-green-600"
+                        ? "text-orange-600"
+                        : "text-green-600"
                         }`}
                     />
                     <div>
@@ -208,8 +209,8 @@ export function EmergencyFeatures() {
       transition={{ duration: 0.6, delay: 0.3 }}
     >
       <Card className={`p-6 rounded-2xl border-2 shadow-lg transition-all ${emergencyMode
-          ? "border-red-500 bg-red-50"
-          : "border-violet-200 bg-violet-50"
+        ? "border-red-500 bg-red-50"
+        : "border-violet-200 bg-violet-50"
         }`}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-bold text-gray-900">Emergency & Support</h3>
@@ -224,8 +225,8 @@ export function EmergencyFeatures() {
             onClick={() => setEmergencyMode(!emergencyMode)}
             whileTap={{ scale: 0.95 }}
             className={`w-full py-4 rounded-lg font-bold transition-all flex items-center justify-center gap-2 ${emergencyMode
-                ? "bg-red-600 text-white shadow-lg shadow-red-600/50"
-                : "bg-red-500 hover:bg-red-600 text-white"
+              ? "bg-red-600 text-white shadow-lg shadow-red-600/50"
+              : "bg-red-500 hover:bg-red-600 text-white"
               }`}
           >
             <SOS className="w-5 h-5" />
@@ -307,10 +308,10 @@ export function MaintenanceReminders() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.05 }}
                 className={`p-3 rounded-lg border-l-4 ${isUrgent
-                    ? "border-l-red-500 bg-red-50"
-                    : item.priority === "medium"
-                      ? "border-l-orange-500 bg-orange-50"
-                      : "border-l-green-500 bg-green-50"
+                  ? "border-l-red-500 bg-red-50"
+                  : item.priority === "medium"
+                    ? "border-l-orange-500 bg-orange-50"
+                    : "border-l-green-500 bg-green-50"
                   }`}
               >
                 <div className="flex items-start justify-between">
@@ -373,8 +374,8 @@ export function BonusTracking() {
                   <p className="text-xs text-gray-600">{bonus.earned}</p>
                 </div>
                 <span className={`px-2 py-1 rounded-full text-xs font-bold ${bonus.status === "active"
-                    ? "bg-green-100 text-green-700"
-                    : "bg-gray-100 text-gray-700"
+                  ? "bg-green-100 text-green-700"
+                  : "bg-gray-100 text-gray-700"
                   }`}>
                   {bonus.status === "active" ? "Active" : "Coming"}
                 </span>
@@ -411,8 +412,8 @@ export function NightSafetyMode() {
       transition={{ duration: 0.6, delay: 0.4 }}
     >
       <Card className={`p-6 rounded-2xl border-0 shadow-lg transition-all ${nightModeEnabled
-          ? "bg-gradient-to-br from-slate-900 to-slate-800 text-white"
-          : "bg-white"
+        ? "bg-gradient-to-br from-slate-900 to-slate-800 text-white"
+        : "bg-white"
         }`}>
         <div className="flex items-center justify-between mb-4">
           <h3 className={`font-bold text-lg ${nightModeEnabled ? "text-white" : "text-gray-900"}`}>
@@ -422,8 +423,8 @@ export function NightSafetyMode() {
             onClick={() => setNightModeEnabled(!nightModeEnabled)}
             whileTap={{ scale: 0.95 }}
             className={`p-2 rounded-lg transition-all ${nightModeEnabled
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-700"
+              ? "bg-blue-600 text-white"
+              : "bg-gray-200 text-gray-700"
               }`}
           >
             {nightModeEnabled ? (
@@ -435,8 +436,8 @@ export function NightSafetyMode() {
         </div>
 
         <div className={`space-y-3 p-4 rounded-lg border-2 ${nightModeEnabled
-            ? "border-blue-500 bg-slate-800/50"
-            : "border-gray-200 bg-gray-50"
+          ? "border-blue-500 bg-slate-800/50"
+          : "border-gray-200 bg-gray-50"
           }`}>
           <div className="flex items-center gap-3">
             <CheckCircle className={`w-5 h-5 ${nightModeEnabled ? "text-blue-400" : "text-green-600"}`} />
@@ -463,6 +464,44 @@ export function NightSafetyMode() {
             </span>
           </div>
         </div>
+      </Card>
+    </motion.div>
+  );
+}
+
+export function TrainingLicenseSupport() {
+  const trainings = [
+    { title: "Learner License Guidance", status: "Available", eta: "Book now" },
+    { title: "Partner Driving School", status: "Open", eta: "12 slots" },
+    { title: "Practice Test", status: "Ready", eta: "20 questions" },
+    { title: "Training Fee Assistance", status: "Eligible", eta: "Up to ₹2,000" },
+  ];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: 0.42 }}
+    >
+      <Card className="p-6 rounded-2xl border-0 shadow-lg bg-gradient-to-br from-indigo-50 to-violet-50">
+        <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <GraduationCap className="w-5 h-5 text-indigo-600" />
+          Training & License Assistance
+        </h3>
+        <div className="space-y-3">
+          {trainings.map((item) => (
+            <div key={item.title} className="p-3 rounded-lg bg-white/80 border border-indigo-100 flex items-center justify-between">
+              <div>
+                <p className="text-sm font-semibold text-gray-900">{item.title}</p>
+                <p className="text-xs text-gray-500">{item.eta}</p>
+              </div>
+              <span className="text-xs px-2 py-1 rounded-full bg-indigo-100 text-indigo-700 font-semibold">{item.status}</span>
+            </div>
+          ))}
+        </div>
+        <Button className="w-full mt-4 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white">
+          Book Training Session
+        </Button>
       </Card>
     </motion.div>
   );

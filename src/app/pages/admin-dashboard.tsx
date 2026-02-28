@@ -594,6 +594,11 @@ export function AdminDashboard() {
     { id: 2, type: "Route Deviation", location: "Tech Park Area", resolved: false, date: "Feb 24, 2026" },
     { id: 3, type: "Emergency", location: "Hospital District", resolved: true, date: "Feb 23, 2026" },
   ];
+  const partnerPrograms = [
+    { id: 1, name: "NBFC Loan Partner", active: 124, pending: 17, status: "active" },
+    { id: 2, name: "Women Driver Training Schools", active: 86, pending: 21, status: "active" },
+    { id: 3, name: "License Assistance Queue", active: 42, pending: 9, status: "monitoring" },
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-violet-50/40 to-pink-50/30">
@@ -838,6 +843,34 @@ export function AdminDashboard() {
                       <button className="border border-rose-200 text-rose-600 bg-rose-50 px-4 py-2 rounded-xl text-sm font-bold hover:bg-rose-100 transition-colors">Reject</button>
                     </div>
                   )}
+                </div>
+              ))}
+            </div>
+          </Card>
+        </motion.div>
+
+        {/* Loan Partnership + Training Monitoring */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.68 }}>
+          <Card className="p-5 sm:p-6">
+            <SectionLabel icon={Building} text="Loan & Training Program Monitoring" gradient="from-violet-500 to-pink-500" />
+            <div className="grid sm:grid-cols-3 gap-3">
+              {partnerPrograms.map((program) => (
+                <div key={program.id} className="p-4 rounded-xl border border-violet-100 bg-gradient-to-br from-violet-50/50 to-pink-50/40">
+                  <p className="text-sm font-bold text-gray-900 mb-2">{program.name}</p>
+                  <div className="flex items-center justify-between text-xs text-gray-600 mb-1">
+                    <span>Active</span>
+                    <span className="font-bold text-violet-700">{program.active}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-gray-600 mb-2">
+                    <span>Pending</span>
+                    <span className="font-bold text-pink-700">{program.pending}</span>
+                  </div>
+                  <span className={`text-[11px] px-2 py-1 rounded-full font-bold border ${program.status === "active"
+                    ? "bg-emerald-100 text-emerald-700 border-emerald-200"
+                    : "bg-amber-100 text-amber-700 border-amber-200"
+                    }`}>
+                    {program.status}
+                  </span>
                 </div>
               ))}
             </div>

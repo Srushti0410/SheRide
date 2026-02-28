@@ -17,6 +17,9 @@ export interface UserProfile {
   homeLocation?: { lat: number; lng: number; address: string };
   workLocation?: { lat: number; lng: number; address: string };
   verificationStatus?: "pending" | "approved" | "rejected";
+  faceVerification?: "pending" | "verified";
+  backgroundCheckStatus?: "pending" | "approved" | "rejected";
+  preferredRideTypes?: Array<"bike" | "cab" | "rickshaw">;
 }
 
 interface User {

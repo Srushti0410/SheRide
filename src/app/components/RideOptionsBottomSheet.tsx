@@ -6,7 +6,7 @@ import { Button } from "./ui/button";
 interface RideOption {
   id: string;
   name: string;
-  type: "mini" | "sedan" | "suv" | "premium" | "female";
+  type: "bike" | "mini" | "sedan" | "suv" | "premium" | "female" | "rickshaw";
   icon: string;
   price: number;
   eta: string;
@@ -23,6 +23,11 @@ interface RideOptionsBottomSheetProps {
 }
 
 const carIcons = {
+  bike: (
+    <svg viewBox="0 0 48 48" fill="currentColor" className="w-full h-full">
+      <path d="M16 30a6 6 0 1 1 0 12 6 6 0 0 1 0-12zm18 0a6 6 0 1 1 0 12 6 6 0 0 1 0-12zM19 12h8l3 5h7v3h-6l-3.5 6.2A9 9 0 0 0 25 30h-3.5L17 20h-6v-3h8l2 4 2.2-4H19v-5z" />
+    </svg>
+  ),
   mini: (
     <svg viewBox="0 0 48 48" fill="currentColor" className="w-full h-full">
       <path d="M38 18h-2.2l-2.8-7c-.5-1.2-1.7-2-3-2H18c-1.3 0-2.5.8-3 2l-2.8 7H10c-2.2 0-4 1.8-4 4v10c0 1.1.9 2 2 2h2c0 1.7 1.3 3 3 3s3-1.3 3-3h16c0 1.7 1.3 3 3 3s3-1.3 3-3h2c1.1 0 2-.9 2-2V22c0-2.2-1.8-4-4-4zm-25 0l2-5h18l2 5H13zm0 12c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm22 0c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z" />
@@ -50,6 +55,11 @@ const carIcons = {
       <path d="M24 13c-2.2 0-4 1.8-4 4v2h8v-2c0-2.2-1.8-4-4-4z" fill="currentColor" />
     </svg>
   ),
+  rickshaw: (
+    <svg viewBox="0 0 48 48" fill="currentColor" className="w-full h-full">
+      <path d="M8 14h20c3.3 0 6 2.7 6 6v5h4c2.2 0 4 1.8 4 4v6h-4a5 5 0 0 1-10 0H18a5 5 0 0 1-10 0H4V18c0-2.2 1.8-4 4-4zm5 23a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm20 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-5-20H12v8h18v-5a3 3 0 0 0-3-3z" />
+    </svg>
+  ),
 };
 
 export function RideOptionsBottomSheet({
@@ -62,6 +72,17 @@ export function RideOptionsBottomSheet({
   const dragControls = useDragControls();
 
   const rideOptions: RideOption[] = [
+    {
+      id: "bike",
+      name: "Bike",
+      type: "bike",
+      icon: "bike",
+      price: Math.round(basePrice * 0.65),
+      eta: "1 min",
+      capacity: 1,
+      color: "orange",
+      features: ["Quick", "Affordable", "Helmet"],
+    },
     {
       id: "mini",
       name: "Mini",
@@ -116,6 +137,17 @@ export function RideOptionsBottomSheet({
       capacity: 4,
       color: "pink",
       features: ["Female Driver", "AC", "Music", "Verified"],
+    },
+    {
+      id: "rickshaw",
+      name: "Auto Rickshaw",
+      type: "rickshaw",
+      icon: "rickshaw",
+      price: Math.round(basePrice * 0.75),
+      eta: "3 min",
+      capacity: 3,
+      color: "emerald",
+      features: ["Budget", "City Commute", "LGBTQ Friendly"],
     },
   ];
 

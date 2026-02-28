@@ -29,6 +29,7 @@ import {
   MaintenanceReminders,
   BonusTracking,
   NightSafetyMode,
+  TrainingLicenseSupport,
 } from "../components/DriverEnhancedFeatures";
 
 export function DriverDashboard() {
@@ -216,7 +217,10 @@ export function DriverDashboard() {
           <MaintenanceReminders />
         </div>
 
-        <NightSafetyMode />
+        <div className="grid lg:grid-cols-2 gap-6 mb-8">
+          <NightSafetyMode />
+          <TrainingLicenseSupport />
+        </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Main Content */}

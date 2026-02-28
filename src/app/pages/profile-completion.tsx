@@ -32,6 +32,8 @@ export function ProfileCompletionPage() {
   const [idProof, setIdProof] = useState("");
   const [idNumber, setIdNumber] = useState("");
   const [insuranceProof, setInsuranceProof] = useState("");
+  const [faceVerificationDone, setFaceVerificationDone] = useState(false);
+  const [backgroundConsent, setBackgroundConsent] = useState(false);
 
   // const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
   //   const file = e.target.files?.[0];
@@ -102,6 +104,11 @@ export function ProfileCompletionPage() {
         vehicleModel: user?.role === "driver" ? vehicleModel : undefined,
         vehicleNumber: user?.role === "driver" ? vehicleNumber : undefined,
         insuranceProof: user?.role === "driver" ? insuranceProof : undefined,
+        faceVerification: faceVerificationDone ? ("verified" as const) : ("pending" as const),
+        backgroundCheckStatus: user?.role === "driver"
+          ? (backgroundConsent ? ("pending" as const) : undefined)
+          : undefined,
+        preferredRideTypes: ["bike", "cab", "rickshaw"] as Array<"bike" | "cab" | "rickshaw">,
         verificationStatus: "pending" as const,
       };
 
@@ -123,8 +130,9 @@ export function ProfileCompletionPage() {
   const validateAllFields = (): boolean => {
     if (!age || !gender || !emergencyContact || !emergencyPhone) return false;
     if (!homeLocation || !workLocation) return false;
+    if (!faceVerificationDone) return false;
     if (user?.role === "driver") {
-      if (!licenseNumber || !vehicleModel || !vehicleNumber || !idProof) return false;
+      if (!licenseNumber || !vehicleModel || !vehicleNumber || !idProof || !backgroundConsent) return false;
     } else {
       if (!idProof || !idNumber) return false;
     }
@@ -231,17 +239,27 @@ export function ProfileCompletionPage() {
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">Gender *</label>
                   <div className="flex gap-4">
-                    {["male", "female", "other"].map((g) => (
-                      <label key={g} className="flex items-center gap-2 cursor-pointer">
+                    {(user?.role === "driver" || user?.role === "passenger"
+                      ? [
+                        { value: "female", label: "Female" },
+                        { value: "other", label: "Others (LGBTQ Friendly)" },
+                      ]
+                      : [
+                        { value: "male", label: "Male" },
+                        { value: "female", label: "Female" },
+                        { value: "other", label: "Other" },
+                      ]
+                    ).map((g) => (
+                      <label key={g.value} className="flex items-center gap-2 cursor-pointer">
                         <input
                           type="radio"
                           name="gender"
-                          value={g}
-                          checked={gender === g}
+                          value={g.value}
+                          checked={gender === g.value}
                           onChange={(e) => setGender(e.target.value)}
                           className="w-4 h-4 text-pink-500"
                         />
-                        <span className="text-gray-300 capitalize">{g}</span>
+                        <span className="text-gray-300">{g.label}</span>
                       </label>
                     ))}
                   </div>
@@ -450,6 +468,36 @@ export function ProfileCompletionPage() {
                     </span>
                   </label>
                 </div>
+
+                <div className="bg-gray-900 rounded-lg p-4">
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={faceVerificationDone}
+                      onChange={(e) => setFaceVerificationDone(e.target.checked)}
+                      className="w-4 h-4 text-pink-500 mt-1"
+                    />
+                    <span className="text-sm text-gray-300">
+                      Face verification completed for secure account access.
+                    </span>
+                  </label>
+                </div>
+
+                {user?.role === "driver" && (
+                  <div className="bg-gray-900 rounded-lg p-4">
+                    <label className="flex items-start gap-3 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={backgroundConsent}
+                        onChange={(e) => setBackgroundConsent(e.target.checked)}
+                        className="w-4 h-4 text-pink-500 mt-1"
+                      />
+                      <span className="text-sm text-gray-300">
+                        I consent to SheRide background checks for driver safety verification.
+                      </span>
+                    </label>
+                  </div>
+                )}
               </div>
             </div>
           )}

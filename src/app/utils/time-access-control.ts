@@ -29,12 +29,12 @@ export function checkAccessByTimeAndGender(
     };
   } else {
     // Night time
-    if (userGender === "female" || userGender === "girl") {
+    if (userGender === "female" || userGender === "girl" || userGender === "other") {
       return {
         canAccessRide: true,
         currentTimeType: "night",
-        availableRideTypes: ["girls-only"],
-        message: "During night hours, only Girls Ride is available for safety",
+        availableRideTypes: ["girls-only", "lgbtq-friendly"],
+        message: "During night hours, only women and LGBTQ-friendly rides are available for safety",
       };
     } else {
       return {

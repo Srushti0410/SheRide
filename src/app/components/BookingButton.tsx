@@ -6,6 +6,7 @@ import { useState } from "react";
 interface BookingButtonProps {
   onConfirm: () => void;
   disabled?: boolean;
+  paymentMethod?: string;
   selectedRide?: {
     name: string;
     price: number;
@@ -29,7 +30,7 @@ type RideStatus =
   | "reached"
   | "started";
 
-export function BookingButton({ onConfirm, disabled, selectedRide }: BookingButtonProps) {
+export function BookingButton({ onConfirm, disabled, selectedRide, paymentMethod = "UPI" }: BookingButtonProps) {
   const [rideStatus, setRideStatus] = useState<RideStatus>("idle");
   const [driver, setDriver] = useState<Driver | null>(null);
   const [ripples, setRipples] = useState<{ id: number; x: number; y: number }[]>([]);
@@ -195,7 +196,7 @@ export function BookingButton({ onConfirm, disabled, selectedRide }: BookingButt
             animate={{ opacity: 1, y: 0 }}
             className="text-center text-sm text-gray-600 mt-2"
           >
-            {selectedRide.name} • Arrives in ~2 min
+            {selectedRide.name} • {paymentMethod} • Arrives in ~2 min
           </motion.p>
         )}
       </motion.div>
@@ -318,19 +319,19 @@ export function BookingButton({ onConfirm, disabled, selectedRide }: BookingButt
                     ease: "linear"
                   }}
                   className={`w-8 h-8 rounded-full flex items-center justify-center ${rideStatus === "reached"
-                      ? "bg-green-500"
-                      : rideStatus === "started"
-                        ? "bg-purple-500"
-                        : "bg-blue-500"
+                    ? "bg-green-500"
+                    : rideStatus === "started"
+                      ? "bg-purple-500"
+                      : "bg-blue-500"
                     }`}
                 >
                   {getStatusIcon()}
                 </motion.div>
                 <span className={`text-lg font-bold ${rideStatus === "reached"
-                    ? "text-green-600"
-                    : rideStatus === "started"
-                      ? "text-purple-600"
-                      : "text-blue-600"
+                  ? "text-green-600"
+                  : rideStatus === "started"
+                    ? "text-purple-600"
+                    : "text-blue-600"
                   }`}>
                   {getStatusMessage()}
                 </span>
@@ -354,8 +355,8 @@ export function BookingButton({ onConfirm, disabled, selectedRide }: BookingButt
                         <Star
                           key={i}
                           className={`w-3.5 h-3.5 ${i < Math.floor(driver.rating)
-                              ? "fill-yellow-400 text-yellow-400"
-                              : "text-gray-300"
+                            ? "fill-yellow-400 text-yellow-400"
+                            : "text-gray-300"
                             }`}
                         />
                       ))}
@@ -380,8 +381,8 @@ export function BookingButton({ onConfirm, disabled, selectedRide }: BookingButt
                   animate={{ scaleX: 1 }}
                   transition={{ delay: 0.4 }}
                   className={`bg-gradient-to-r ${rideStatus === "arriving"
-                      ? "from-orange-500 to-red-500"
-                      : "from-pink-500 to-purple-500"
+                    ? "from-orange-500 to-red-500"
+                    : "from-pink-500 to-purple-500"
                     } text-white rounded-xl p-3 flex items-center justify-between`}
                 >
                   <div className="flex items-center gap-2">
