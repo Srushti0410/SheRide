@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ApiError } from '../utils/api-client';
+import { ApiError } from '../../utils/api-client';
 
 export interface UseApiCallState<T> {
   data: T | null;
